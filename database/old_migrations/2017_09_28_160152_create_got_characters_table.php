@@ -14,7 +14,7 @@ class CreateGotCharactersTable extends Migration
     public function up()
     {
         Schema::create('got_characters', function (Blueprint $table) {
-            $table->primary('char_url')->unique();
+            $table->primary('char_url')->unique(); //future: volledige url er afsnijden en enkel ID gebruiken
             $table->string('name')->nullable();
             $table->string('culture')->nullable();
             $table->string('titles')->nullable();

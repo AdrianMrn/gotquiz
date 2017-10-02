@@ -25,6 +25,7 @@ class CreateGotHousesTable extends Migration
             $table->string('cadetBranches')->nullable();
             $table->string('')->nullable();
             
+            //future: foreign keys met tussentabel (denk ik, best googlen)
             $table->string('currentLord')->nullable();
             $table->string('heir')->nullable();
             $table->string('overlord')->nullable();
