@@ -17,7 +17,7 @@ class LinkGotCharactersGotHouses extends Model
 
     public function characters()
     {
-        return $this->belongsToMany('Character')character_id;
+        return $this->belongsToMany('Character', 'character_id');
     }
 
 }

@@ -48,6 +48,21 @@ class CreateForeignKeys extends Migration {
 						->onDelete('cascade')
 						->onUpdate('cascade');
 		});
+		Schema::table('participations', function(Blueprint $table) {
+			$table->foreign('user_id')->references('id')->on('users')
+						->onDelete('cascade')
+						->onUpdate('cascade');
+		});
+		Schema::table('participations', function(Blueprint $table) {
+			$table->foreign('contest_id')->references('id')->on('contests')
+						->onDelete('cascade')
+						->onUpdate('cascade');
+		});
+		Schema::table('contests', function(Blueprint $table) {
+			$table->foreign('winner_id')->references('id')->on('users')
+						->onDelete('cascade')
+						->onUpdate('cascade');
+		});
 	}
 
 	public function down()
@@ -75,6 +90,15 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table('link_got_characters_got_houses', function(Blueprint $table) {
 			$table->dropForeign('link_got_characters_got_houses_house_id_foreign');
+		});
+		Schema::table('participations', function(Blueprint $table) {
+			$table->dropForeign('participations_user_id_foreign');
+		});
+		Schema::table('participations', function(Blueprint $table) {
+			$table->dropForeign('participations_contest_id_foreign');
+		});
+		Schema::table('contests', function(Blueprint $table) {
+			$table->dropForeign('contests_winner_id_foreign');
 		});
 	}
 }

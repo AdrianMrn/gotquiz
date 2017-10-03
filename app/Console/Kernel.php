@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\testjob::class,
+        Commands\getdata::class,
     ];
 
     /**
@@ -28,8 +28,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('do:testjob')
-                  ->everyMinute();
+         /* $schedule->command('do:testjob')
+                  ->everyMinute(); */
     }
 
     /**

@@ -15,11 +15,16 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->integer('isAdmin')->default('0');
+			$table->string('name', 255);
+			$table->string('email', 255)->unique();
+			$table->string('password');
+			$table->ipAddress('ipaddress');
+			$table->string('address', 255);
+			$table->string('town', 255);
+			$table->softDeletes();
+			$table->rememberToken('rememberToken');
+			$table->timestamps();
         });
     }
 
@@ -33,3 +38,4 @@ class CreateUsersTable extends Migration
         Schema::dropIfExists('users');
     }
 }
+
