@@ -61,6 +61,34 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('town') ? ' has-error' : '' }}">
+                            <label for="town" class="col-md-4 control-label">City name</label>
+
+                            <div class="col-md-6">
+                                <input id="town" type="text" class="form-control" name="town" value="{{ old('town') }}" required>
+
+                                @if ($errors->has('town'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('town') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
+                            <label for="address" class="col-md-4 control-label">Address (street + number)</label>
+
+                            <div class="col-md-6">
+                                <input id="address" type="text" class="form-control" name="address" value="{{ old('address') }}" required>
+
+                                @if ($errors->has('address'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('address') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
