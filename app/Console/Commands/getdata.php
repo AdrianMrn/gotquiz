@@ -112,8 +112,6 @@ class getdata extends Command
                     $gotAllElements = true;
                 }
     
-                //echo dd($data);
-    
                 foreach ($data as $character) {
                     $id = preg_replace('/[^0-9]+/', '', $character->url);
     
@@ -304,12 +302,12 @@ class getdata extends Command
         }
 
         $apiUrl = 'https://anapioficeandfire.com/api/';
-        /* getCharacters($apiUrl);
-        fkCharacters($apiUrl); */
 
-        /* getTitlesAndAliases($apiUrl); */
+        getCharacters($apiUrl);
+        fkCharacters($apiUrl);
+        getTitlesAndAliases($apiUrl);
 
-        /* getHouses($apiUrl); */
+        getHouses($apiUrl);
 
         getAllegiances($apiUrl);
 

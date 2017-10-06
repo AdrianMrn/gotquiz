@@ -28,8 +28,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         /* $schedule->command('do:testjob')
-                  ->everyMinute(); */
+        $schedule->command('do:getdata')->daily();
+
+        $schedule->command('do:checkcontests')->everyMinute();
+
     }
 
     /**

@@ -17,12 +17,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/apitest', 'ApiController@test')->name('home');
-
-Route::prefix('admin')->group(function () {
-    Route::get('/', 'Admin\DashboardController@index'); //implement paging?
+Route::prefix('quiz')->group(function () {
+    Route::get('start', 'QuizController@index')->name('quiz.start');
+    Route::get('quiz', 'QuizController@quiz')->name('quiz.quiz');
+    Route::post('gradequiz', 'QuizController@gradeQuiz')->name('quiz.gradeQuiz');
 });
+
+Route::group(['middleware' => ['auth', 'admin']], function() {
+    Route::prefix('admin')->group(function () {
+        Route::get('/', ['uses' => 'Admin\DashboardController@index', 'as' => 'admin.dashboard']);
+    });
+    
+    Route::get('/contests/{id}', 'ContestController@detail');
+
+    Route::resource('users','UserController');
+    Route::resource('contests','ContestController');
+});
+
+//future: use middleware VerifyCsrfToken for forms

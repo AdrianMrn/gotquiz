@@ -13,10 +13,14 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <!-- future: check if logged in first, don't show start button if not logged in {{ Auth::user() }} -->
+                    <!-- future: short tutorial/description of the quiz -->
+                    <!-- future: show amount of attempts left for today, and hide/disable the start button if >=5 -->
 
-                    Welcome!
+                    <p>description goes here</p>
 
-                    <a href="{{ route('quiz.start') }}">Go to the quiz.</a>
+                    <a href="{{ route('quiz.quiz') }}">Start the quiz!</a>
+
                 </div>
             </div>
         </div>

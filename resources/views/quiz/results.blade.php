@@ -13,10 +13,14 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <!-- future: show user which questions he got right & wrong -->
+                    <!-- future: show attempts left -->
 
-                    Welcome!
+                    <p>Points:</p>
+                    <p>{{ $points }} </p>
 
-                    <a href="{{ route('quiz.start') }}">Go to the quiz.</a>
+                    <a href="{{ route('quiz.quiz') }}">Start another quiz!</a>
+
                 </div>
             </div>
         </div>
