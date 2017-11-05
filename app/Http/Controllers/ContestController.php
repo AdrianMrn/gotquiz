@@ -9,12 +9,18 @@ use App\Contest;
 
 class ContestController extends Controller
 {
+    public function getAll() {
+        $contests = Contest::simplePaginate(10);
+
+        return view('admin.contests', ['contests' => $contests]);
+    }
+
     public function update($id, Request $request)
     {
         if (!$id) {
             $contest = new Contest;
-            $contest->start = Carbon::now();
-            $contest->end = Carbon::now()->addDays(1);
+            $contest->start = Carbon::now()->addDays(1);
+            $contest->end = Carbon::now()->addDays(2);
     
             $contest->save();
     

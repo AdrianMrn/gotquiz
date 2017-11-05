@@ -28,10 +28,10 @@ Route::prefix('quiz')->group(function () {
 Route::group(['middleware' => ['auth', 'admin']], function() {
     Route::prefix('admin')->group(function () {
         Route::get('/', ['uses' => 'Admin\DashboardController@index', 'as' => 'admin.dashboard']);
+        Route::get('/contests', ['uses' => 'ContestController@getAll', 'as' => 'admin.contests']);
+        Route::get('/contests/{id}', ['uses' => 'ContestController@detail', 'as' => 'admin.contestdetail']);
     });
     
-    Route::get('/contests/{id}', 'ContestController@detail');
-
     Route::resource('users','UserController');
     Route::resource('contests','ContestController');
 });

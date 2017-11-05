@@ -7,6 +7,8 @@ use App\User;
 
 class UserController extends Controller
 {
+    //users get is in dasbhoard controller
+
     public function destroy($id)
     {
         User::find($id)->delete();

@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>GoTQuiz</title>
+    <title>{{ config('app.name', 'Laravel') }} - Dashboard</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -31,14 +31,15 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        Go to website
                     </a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        <li class="{{ Request::is('admin') ? 'active' : '' }}"><a href="{{ route('admin.dashboard') }}">Users <span class="sr-only">Users</span></a></li>
+                        <li class="{{ Request::is('admin/contests') ? 'active' : '' }}"><a href="{{ route('admin.contests') }}">Contests <span class="sr-only">Contests</span></a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -74,12 +75,11 @@
         </nav>
 
         @yield('content')
-
     </div>
     
     <div id="footer">
         <div class="container">
-            <p class="footer-block"><a href="{{ route('admin.dashboard') }}">Dashboard</a></p>
+            <p class="footer-block"><a href="{{ route('home') }}">Back to website</a></p>
         </div>
     </div>
 
