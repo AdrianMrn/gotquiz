@@ -79,12 +79,12 @@ class checkcontests extends Command
 
         $to = $admin->name . "<" . $admin->email . ">";
         $subject = "GoTQuiz Season " . $contest->id . " ending";
-        $text = "Hi " . $admin->name . ",\n\nYou are receiving this email because you are the contest admin for this season of GoTQuiz. A winner has been chosen, here's their information:\n\n";
+        $text = "Hi " . $admin->name . ",\n\nYou are receiving this email because you are the contest admin for this season of GoTQuiz.\n\n";
 
         //counting the users' total points for this contest
         $points = [];
         $participations = Participation::where('contest_id', $contest->id)->get();
-        if (sizeof($participations)) { //future: test the contest end if there were no participations at all. && send a different mail in the else
+        if (sizeof($participations)) {
             foreach ($participations as $participation) {
                 $user_id = $participation->user_id;
                 if (array_key_exists($user_id, $points)) {
@@ -104,8 +104,8 @@ class checkcontests extends Command
     
             //future: send email to contest_admin_id with the message that contest id x has ended + the contest's winner's info
             $winner = User::find($winner_id);
-            $text = $text . "User id: " . $winner_id . "\nScore: " . $points[$winner_id] . "\nName: " . $winner->name . "\nEmail address: " . $winner->email . "\nAddress: " . $winner->address . ", " . $winner->town;
-            
+            $text = $text . "A winner has been chosen, here's their information:\n" . 
+                    "User id: " . $winner_id . "\nScore: " . $points[$winner_id] . "\nName: " . $winner->name . "\nEmail address: " . $winner->email . "\nAddress: " . $winner->address . ", " . $winner->town;
     
         } else {
             $text = $text . "There were no participations this season, so no winner was chosen.";

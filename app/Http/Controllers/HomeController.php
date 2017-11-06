@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Contest, App\User;
+
 class HomeController extends Controller
 {
     /**
@@ -12,9 +14,7 @@ class HomeController extends Controller
      * @return void
      */
     public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    {}
 
     /**
      * Show the application dashboard.
@@ -23,6 +23,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $contests = Contest::where('status', 'finished')->get();
+
+        foreach($contests as $contest) {
+            if ($contest->winner_id) {
+                $winner = User::find($contest->winner_id);
+                $contest->winnername = $winner->name;
+            } else {
+                $contest->winnername = "No winner!";
+            }
+        }
+
+        return view('home', ['contests' => $contests]);
     }
 }

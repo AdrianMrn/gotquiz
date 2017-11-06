@@ -31,6 +31,20 @@ class ContestController extends Controller
         } else {
             //future: validation for contest->end > contest->start
             //future: validation for no intersections with other contests
+
+            $this->validate($request, [
+                'winner_id' => 'max:255|numeric',
+                'start' => 'required|date_format:Y-m-d H:i:s',
+                'end' => 'required|date_format:Y-m-d H:i:s',
+                'status' => 'required|string|max:15',
+                'participations_allowed_daily' => 'required|numeric',
+                'contest_admin_id' => 'required|numeric'
+            ]);
+
+            if ($request->end <= $request->start) {
+                return redirect()->back()->withErrors("The end date has to be after the start date")->withInput();
+            }
+
             $contest = Contest::find($id);
             $contest->winner_id = $request->winner;
             $contest->start = $request->start;

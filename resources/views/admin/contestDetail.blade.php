@@ -40,7 +40,7 @@
                                 <td>{{ Form::input('text', 'contest_admin_id', $contest->contest_admin_id) }}</td>
                                 <td>{{ Form::input('text', 'start', $contest->start) }}</td>
                                 <td>{{ Form::input('text', 'end', $contest->end) }}</td>
-                                <td>{{ Form::input('text', 'status', $contest->status) }}</td> <!-- future: change to dropdown? -->
+                                <td>{{ Form::select('status', array('upcoming'=>'upcoming', 'running'=>'running', 'finished'=>'finished'), $contest->status) }}</td>
                                 <td>{{ Form::input('text', 'participations_allowed_daily', $contest->participations_allowed_daily) }}</td>
                             </tr>
                         </tbody>
@@ -49,6 +49,17 @@
                     
                     {!! Form::submit('Save', ['class' => 'btn btn-success']) !!}
                     {!! Form::close() !!}
+
+                    @if (count($errors) > 0)
+                    <br/><br/>
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
