@@ -71,6 +71,16 @@ class checkcontests extends Command
     public function endOfContest($contest)
     {
         echo "\nContest ending!\n";
+
+        $admin = User::find($contest->contest_admin_id);
+
+        $mgClient = new Mailgun(env('MAILGUN_APIKEY', ''));
+        $domain = env('MAILGUN_DOMAIN', '');
+
+        $to = $admin->name . "<" . $admin->email . ">";
+        $subject = "GoTQuiz Season " . $contest->id . " ending";
+        $text = "Hi " . $admin->name . ",\n\nYou are receiving this email because you are the contest admin for this season of GoTQuiz. A winner has been chosen, here's their information:\n\n";
+
         //counting the users' total points for this contest
         $points = [];
         $participations = Participation::where('contest_id', $contest->id)->get();
@@ -94,23 +104,19 @@ class checkcontests extends Command
     
             //future: send email to contest_admin_id with the message that contest id x has ended + the contest's winner's info
             $winner = User::find($winner_id);
-            $admin = User::find($contest->contest_admin_id);
+            $text = $text . "User id: " . $winner_id . "\nScore: " . $points[$winner_id] . "\nName: " . $winner->name . "\nEmail address: " . $winner->email . "\nAddress: " . $winner->address . ", " . $winner->town;
+            
     
-            $mgClient = new Mailgun('key-7b0ef6e57e20a734a5fe69c8d7ee8915');
-            $domain = "sandbox1130ed18768546ab8261e91ef48d6275.mailgun.org";
-    
-            $to = $admin->name . "<" . $admin->email . ">";
-            $subject = "GoTQuiz Season " . $contest->id . " ending";
-            $text = "Hi " . $admin->name . ",\n\nYou are receiving this email because you are the contest admin for this season of GoTQuiz. A winner has been chosen, here's their information:\n\n" .
-            "User id: " . $winner_id . "\nScore: " . $points[$winner_id] . "\nName: " . $winner->name . "\nEmail address: " . $winner->email . "\nAddress: " . $winner->address . ", " . $winner->town;
-    
-            $result = $mgClient->sendMessage("$domain",
-                    array('from'    => 'Mailgun Sandbox <postmaster@sandbox1130ed18768546ab8261e91ef48d6275.mailgun.org>',
-                            'to'      => $to,
-                            'subject' => $subject,
-                            'text'    => $text));
-    
-            return $contest;
+        } else {
+            $text = $text . "There were no participations this season, so no winner was chosen.";
         }
+
+        $result = $mgClient->sendMessage("$domain",
+                array('from'    => 'Mailgun Sandbox <postmaster@sandbox1130ed18768546ab8261e91ef48d6275.mailgun.org>',
+                        'to'      => $to,
+                        'subject' => $subject,
+                        'text'    => $text));
+
+        return $contest;
     }
 }
