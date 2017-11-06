@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
+                <div class="panel-heading">GoTQuiz</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -13,13 +13,26 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <!-- future: check if logged in first, don't show start button if not logged in {{ Auth::user() }} -->
-                    <!-- future: short tutorial/description of the quiz -->
-                    <!-- future: show amount of attempts left for today, and hide/disable the start button if >=5 -->
 
-                    <p>description goes here</p>
+                    @if (Auth::check())
+                        @if(Session::has('points'))
+                            <p class="alert alert-info">Points in last attempt: {{ Session::get('points') }}</p>
+                        @endif
+    
+                        <p>description goes here</p> <!-- future: short tutorial/description of the quiz -->
 
-                    <a href="{{ route('quiz.quiz') }}">Start the quiz!</a>
+                        <p>Participations remaining today: {{ $participationsRemaining }}</p>
+    
+                        <a href="{{ route('quiz.quiz') }}" class="btn btn-primary {{ $participationsRemaining <= 0 ? "disabled" : "" }}">Start the quiz!</a>
+    
+                        @if(Session::has('error'))
+                            <p class="alert alert-danger">{{ Session::get('error') }}</p>
+                        @endif
+                    @else
+                        <p>You have to be logged in to an account to participate!</p>
+
+                    @endif
+
 
                 </div>
             </div>

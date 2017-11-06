@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-use App\Contest;
+use App\Contest, App\Participation;
 
 class ContestController extends Controller
 {
@@ -24,7 +24,7 @@ class ContestController extends Controller
     
             $contest->save();
     
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.contests');
         } else {
             //future: validation for contest->end > contest->start
             //future: validation for no intersections with other contests
@@ -33,8 +33,9 @@ class ContestController extends Controller
             $contest->start = $request->start;
             $contest->end = $request->end;
             $contest->status = $request->status;
+            $contest->participations_allowed_daily = $request->participations_allowed_daily;
             $contest->save();
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.contests');
         }
     }
 
@@ -46,6 +47,32 @@ class ContestController extends Controller
     public function destroy($id)
     {
         Contest::find($id)->delete();
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.contests');
+    }
+
+    public function currentContest()
+    {
+        $currentContest = Contest::where("status" , '=', "running")->first();
+        if (!$currentContest)
+        {
+            return 0;
+        } //else
+        return $currentContest->id;
+    }
+    /* public function amountOfParticipations($userid)
+    {
+        return Participation::where([['user_id', '=', $userid],['contest_id', '=', $this->currentContest()],['created_at', '>', Carbon::now()->subDay()]])->count();
+    }
+    public function amountOfParticipationsAllowed()
+    {
+        $contest = Contest::find($this->currentContest());
+        return $contest->participations_allowed_daily;
+    } */
+    public function participationsRemaining($userid)
+    {
+        $amountAllowed = Contest::find($this->currentContest())->participations_allowed_daily;
+        $amountOfParticipations = Participation::where([['user_id', '=', $userid],['contest_id', '=', $this->currentContest()],['created_at', '>', Carbon::now()->subDay()]])->count();
+
+        return $amountAllowed - $amountOfParticipations;
     }
 }

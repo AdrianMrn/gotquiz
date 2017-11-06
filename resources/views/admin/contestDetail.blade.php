@@ -29,6 +29,7 @@
                                 <th>Start date/time</th>
                                 <th>End date/time</th>
                                 <th>Status</th>
+                                <th>Daily allowed participations</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,6 +39,7 @@
                                 <td>{{ Form::input('text', 'start', $contest->start) }}</td>
                                 <td>{{ Form::input('text', 'end', $contest->end) }}</td>
                                 <td>{{ Form::input('text', 'status', $contest->status) }}</td> <!-- future: change to dropdown? -->
+                                <td>{{ Form::input('text', 'participations_allowed_daily', $contest->participations_allowed_daily) }}</td>
                             </tr>
                         </tbody>
                     </table>

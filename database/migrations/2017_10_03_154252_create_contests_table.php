@@ -11,6 +11,7 @@ class CreateContestsTable extends Migration {
 			$table->increments('id');
 			$table->timestamps();
 			$table->integer('winner_id')->unsigned()->nullable();
+			$table->integer('participations_allowed_daily')->default(5);
 			$table->datetime('start');
 			$table->datetime('end');
 			$table->string('status')->default('upcoming'); //values are upcoming, running & finished

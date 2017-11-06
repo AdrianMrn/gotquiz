@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
 
+use App\Http\Controllers\ContestController;
+
 use App\Alias, App\Character, App\House, App\Seat, App\Title;
-use App\Participation;
+use App\Participation, App\User;
 
 class QuizController extends Controller
 {
@@ -18,16 +20,25 @@ class QuizController extends Controller
 
     public function index()
     {
-        return view('quiz.start');
+        $participationsRemaining = 0;
+        if (Auth::check())
+        {
+            $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+        }
+        return view('quiz.start', ['participationsRemaining' => $participationsRemaining]);
     }
 
     public function gradeQuiz(Request $request) {
         //stopping cheaters & errors
+        if (!Auth::check())
+        {
+            return view('quiz.start');
+        }
         $quizCompleted = $request->session()->get('quizcompleted', 1);
         $quizStartTime = $request->session()->get('quizstarted', Carbon::now()->subDay());
-        if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 5)) { // adding 5 seconds to allow for latency. 5 seconds also wouldn't give users a very unfair advantage.
-            dd("nice try guy");
-            return view('quiz.error'); //future: create a quiz.error view to explain to the user that something went wrong during their quiz.
+        if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 5)) { // adding 5 seconds to allow for latency. 5 seconds extra also wouldn't give users a very unfair advantage.
+            $request->session()->flash('error', 'Something went wrong when grading your attempt so it has been invalidated. Sorry!'); 
+            return redirect('quiz/start');
         }
         $request->session()->put('quizcompleted', 1);
         
@@ -42,15 +53,35 @@ class QuizController extends Controller
             }
         }
 
-        /* $userid = Auth::user()->id;
-        $participation = Participation::firstOrCreate(); */
+        $participation = Participation::find($request->session()->pull('participationid'));
+        $participation->points = $points;
+        $participation->save();
 
-        return view('quiz.results', ['points' => $points]);
+        $request->session()->flash('points', $points); 
+        return redirect('quiz/start');
     } 
 
     public function quiz(Request $request) {
-        //future: +1 to totalAttempts and attempts today
-        //future: check if attempts today < 5, otherwise send them away with error message
+        if (!Auth::check())
+        {
+            return view('quiz.start');
+        }
+        //checking if the user has any participations left today
+        $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+        if ($participationsRemaining <= 0)
+        {
+            $request->session()->flash('error', 'Amount of allowed attempts reached, come back tomorrow!'); 
+            return redirect('quiz/start');
+        }
+
+        $currentContest = (new ContestController)->currentContest();
+        $participation = new Participation;
+        $participation->points = 0;
+        $participation->user_id = Auth::user()->id;
+        $participation->contest_id = $currentContest;
+        $participation->save();
+        $request->session()->put('participationid', $participation->id); //saving the participation id in session for when grading
+        
         $questions = [];
         $correctAnswers = [];
         //format of a question: {question: "", answers: [], correctAnswer: ""}

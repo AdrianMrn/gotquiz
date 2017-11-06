@@ -11,7 +11,6 @@ class CreateParticipationsTable extends Migration {
 			$table->increments('id');
 			$table->timestamps();
 			$table->integer('points')->unsigned()->default('0');
-			$table->integer('amountToday')->unsigned()->default('0');
 			$table->integer('user_id')->unsigned();
 			$table->integer('contest_id')->unsigned();
 		});

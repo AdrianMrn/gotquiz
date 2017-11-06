@@ -33,6 +33,7 @@
                                 <th>Started</th>
                                 <th>Ends</th>
                                 <th>Status</th>
+                                <th>Participations/day</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -45,6 +46,7 @@
                                 <td>{{ $contest->start }}</td>
                                 <td>{{ $contest->end }}</td>
                                 <td>{{ $contest->status }}</td>
+                                <td>{{ $contest->participations_allowed_daily }}</td>
                                 <td>
                                 <a class="btn btn-warning" href="{{ route('admin.contestdetail', ['id' => $contest->id]) }}">Edit</a>
                                 </td>
