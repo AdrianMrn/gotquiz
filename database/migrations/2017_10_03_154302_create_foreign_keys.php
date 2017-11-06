@@ -78,6 +78,11 @@ class CreateForeignKeys extends Migration {
 						->onDelete('cascade')
 						->onUpdate('cascade');
 		});
+		Schema::table('contests', function(Blueprint $table) {
+			$table->foreign('contest_admin_id')->references('id')->on('users')
+						->onDelete('cascade')
+						->onUpdate('cascade');
+		});
 	}
 
 	public function down()
@@ -123,6 +128,9 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table('contests', function(Blueprint $table) {
 			$table->dropForeign('contests_winner_id_foreign');
+		});
+		Schema::table('contests', function(Blueprint $table) {
+			$table->dropForeign('contest_admin_id_foreign');
 		});
 	}
 }

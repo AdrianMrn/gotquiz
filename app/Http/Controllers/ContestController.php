@@ -21,6 +21,7 @@ class ContestController extends Controller
             $contest = new Contest;
             $contest->start = Carbon::now()->addDays(1);
             $contest->end = Carbon::now()->addDays(2);
+            $contest->winner_points = 0; //future: get rid of this (fixed in migration by adding default)
     
             $contest->save();
     

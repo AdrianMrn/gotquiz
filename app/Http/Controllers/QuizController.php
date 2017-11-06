@@ -21,18 +21,24 @@ class QuizController extends Controller
     public function index()
     {
         $participationsRemaining = 0;
-        if (Auth::check())
+        $currentContest = 0;
+        $currentContest = (new ContestController)->currentContest();
+        if ($currentContest)
         {
-            $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+            if (Auth::check())
+            {
+                $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+            }
         }
-        return view('quiz.start', ['participationsRemaining' => $participationsRemaining]);
+        
+        return view('quiz.start', ['participationsRemaining' => $participationsRemaining, 'currentContest' => $currentContest]);
     }
 
     public function gradeQuiz(Request $request) {
         //stopping cheaters & errors
         if (!Auth::check())
         {
-            return view('quiz.start');
+            return redirect('quiz/start');
         }
         $quizCompleted = $request->session()->get('quizcompleted', 1);
         $quizStartTime = $request->session()->get('quizstarted', Carbon::now()->subDay());
@@ -64,8 +70,9 @@ class QuizController extends Controller
     public function quiz(Request $request) {
         if (!Auth::check())
         {
-            return view('quiz.start');
+            return redirect('quiz/start');
         }
+        $currentContest = (new ContestController)->currentContest();
         //checking if the user has any participations left today
         $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
         if ($participationsRemaining <= 0)
@@ -99,7 +106,7 @@ class QuizController extends Controller
         $request->session()->put('quizcompleted', 0); //submitting the quiz form more than once
         $request->session()->put('quizstarted', Carbon::now()); //circumventing/disabling the js timer to give them more time
 
-        return view('quiz.quiz', ['questions' => $questions, 'timeAllowed' => $this->timeAllowed]);
+        return view('quiz.quiz', ['questions' => $questions, 'timeAllowed' => $this->timeAllowed, 'currentContest' => $currentContest]);
     }
 
     protected function createQuestion()

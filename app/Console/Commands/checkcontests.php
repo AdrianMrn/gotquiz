@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 
-use App\Contest;
+use App\Contest, App\Participation;
+
+use App\Http\Controllers\ContestController;
 
 class checkcontests extends Command
 {
@@ -45,24 +47,49 @@ class checkcontests extends Command
         $contests = Contest::all();
 
         foreach ($contests as $contest) {
-            /* echo "\nContest id " . $contest->id . ":\n";
-            echo "now: " . Carbon::now() . "\n";
-            echo "start: " . $contest->start . "\n";
-            echo "end: " . $contest->end . "\n"; */
-
             if (Carbon::now() > $contest->start && Carbon::now() < $contest->end) {
-                /* echo "Running.\n"; */
                 $contest->status = "running";
             } elseif (Carbon::now() < $contest->end) {
-                /* echo "Upcoming.\n"; */
                 $contest->status = "upcoming";
             } else {
-                /* echo "Finished.\n"; */
+                if ($contest->status == "running")
+                {
+                    //this is run the moment a contest goes from running to finished (end-of-contest)
+                    $contest = $this->endOfContest($contest);
+                }
                 $contest->status = "finished";
             }
             $contest->save();
         }
 
         echo "\nCheck contests finished\n";
+    }
+
+    public function endOfContest($contest)
+    {
+        echo "\nContest ending!\n";
+        //counting the users' total points for this contest
+        $points = [];
+        $participations = Participation::where('contest_id', $contest->id)->get();
+        foreach ($participations as $participation) {
+            $user_id = $participation->user_id;
+            if (array_key_exists($user_id, $points)) {
+                $points[$user_id] += $participation->points;
+            } else {
+                $points[$user_id] = $participation->points;
+            }
+        }
+
+        //picking a winner
+        $highestPoints = max($points);
+        $winner_ids = array_keys($points, $highestPoints);
+        $winner_id = $winner_ids[rand(0,sizeof($winner_ids)-1)]; //if there's a tie, pick a random winner from the tied users
+
+        $contest->winner_id = $winner_id;
+        $contest->winner_points = $points[$winner_id];
+
+        //future: send email to contest_admin_id with the message that contest id x has ended + the contest's winner's info
+
+        return $contest;
     }
 }
