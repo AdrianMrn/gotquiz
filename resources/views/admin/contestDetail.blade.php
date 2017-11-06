@@ -26,6 +26,7 @@
                             <tr>
                                 <th>id</th>
                                 <th>Winner user id</th>
+                                <th>Admin id</th>
                                 <th>Start date/time</th>
                                 <th>End date/time</th>
                                 <th>Status</th>
@@ -36,6 +37,7 @@
                             <tr>
                                 <td>{{ $contest->id }}</td>
                                 <td>{{ Form::input('text', 'winner', $contest->winner_id) }}</td>
+                                <td>{{ Form::input('text', 'contest_admin_id', $contest->contest_admin_id) }}</td>
                                 <td>{{ Form::input('text', 'start', $contest->start) }}</td>
                                 <td>{{ Form::input('text', 'end', $contest->end) }}</td>
                                 <td>{{ Form::input('text', 'status', $contest->status) }}</td> <!-- future: change to dropdown? -->

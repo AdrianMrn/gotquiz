@@ -30,6 +30,7 @@
                             <tr>
                                 <th>id</th>
                                 <th>Winner user id</th>
+                                <th>Admin id</th>
                                 <th>Started</th>
                                 <th>Ends</th>
                                 <th>Status</th>
@@ -43,6 +44,7 @@
                             <tr>
                                 <td>{{ $contest->id }}</td>
                                 <td>{{ $contest->winner_id }}</td>
+                                <td>{{ $contest->contest_admin_id }}</td>
                                 <td>{{ $contest->start }}</td>
                                 <td>{{ $contest->end }}</td>
                                 <td>{{ $contest->status }}</td>

@@ -21,6 +21,7 @@ class ContestController extends Controller
             $contest = new Contest;
             $contest->start = Carbon::now()->addDays(1);
             $contest->end = Carbon::now()->addDays(2);
+            $contest->contest_admin_id = Auth::user()->id;
             $contest->winner_points = 0; //future: get rid of this (fixed in migration by adding default)
     
             $contest->save();
@@ -35,6 +36,7 @@ class ContestController extends Controller
             $contest->end = $request->end;
             $contest->status = $request->status;
             $contest->participations_allowed_daily = $request->participations_allowed_daily;
+            $contest->contest_admin_id = $request->contest_admin_id;
             $contest->save();
             return redirect()->route('admin.contests');
         }
@@ -60,15 +62,6 @@ class ContestController extends Controller
         } //else
         return $currentContest->id;
     }
-    /* public function amountOfParticipations($userid)
-    {
-        return Participation::where([['user_id', '=', $userid],['contest_id', '=', $this->currentContest()],['created_at', '>', Carbon::now()->subDay()]])->count();
-    }
-    public function amountOfParticipationsAllowed()
-    {
-        $contest = Contest::find($this->currentContest());
-        return $contest->participations_allowed_daily;
-    } */
     public function participationsRemaining($userid)
     {
         $amountAllowed = Contest::find($this->currentContest())->participations_allowed_daily;
