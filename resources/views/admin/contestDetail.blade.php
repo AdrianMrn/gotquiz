@@ -21,6 +21,7 @@
                 <div class="panel-heading">Contest id {{ $contest->id }}</div><br/>
                 <div class="panel-body">
                     {!! Form::open(['method' => 'PATCH','route' => ['contests.update', $contest->id],'style'=>'display:inline']) !!}
+                    {{ Form::hidden('id', $contest->id) }}
                     <table class="table table-striped">
                         <thead>
                             <tr>

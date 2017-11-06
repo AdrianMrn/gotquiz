@@ -9,7 +9,6 @@ use App\Contest, App\Participation, App\User;
 
 use App\Http\Controllers\ContestController;
 
-require 'vendor/autoload.php';
 use Mailgun\Mailgun;
 
 class checkcontests extends Command

@@ -29,9 +29,7 @@ class ContestController extends Controller
     
             return redirect()->route('admin.contests');
         } else {
-            //future: validation for contest->end > contest->start
-            //future: validation for no intersections with other contests
-
+            //Validation
             $this->validate($request, [
                 'winner_id' => 'max:255|numeric',
                 'start' => 'required|date_format:Y-m-d H:i:s',
@@ -44,6 +42,21 @@ class ContestController extends Controller
             if ($request->end <= $request->start) {
                 return redirect()->back()->withErrors("The end date has to be after the start date")->withInput();
             }
+            if ($this->currentContest() && $request->status == 'running' && $this->currentContest() != $request->id) {
+                return redirect()->back()->withErrors("There cannot be more than 1 contest running at the same time")->withInput();
+            }
+            $contests = Contest::all();
+            foreach ($contests as $o_contest) {
+                if ($request->id != $o_contest->id) {
+                    if ($o_contest->start > $request->start && $o_contest->start < $request->end) {
+                        return redirect()->back()->withErrors("Your contest period (start and/or end) overlaps with another contest")->withInput();
+                    }
+                    if ($o_contest->end > $request->start && $o_contest->end < $request->end) {
+                        return redirect()->back()->withErrors("Your contest period (start & end) overlaps with another contest")->withInput();
+                    }
+                }
+            }
+            //request is valid (I hope)
 
             $contest = Contest::find($id);
             $contest->winner_id = $request->winner;

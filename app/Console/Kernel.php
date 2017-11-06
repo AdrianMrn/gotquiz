@@ -31,7 +31,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('do:getdata')->daily();
 
         $schedule->command('do:checkcontests')->everyMinute();
-
     }
 
     /**
