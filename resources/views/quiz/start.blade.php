@@ -17,16 +17,16 @@
                     @if ($currentContest)
                         <h4><strong>GotQuiZ Season {{ $currentContest }}</strong></h4>
                         @if (Auth::check())
+        
+                            <p>You've got {{ $timeAllowed }} seconds to solve {{ $amountOfQuestions }} randomly generated questions, good luck!</p> <!-- future: short tutorial/description of the quiz -->
+
+                            <p>Attempts remaining today: {{ $participationsRemaining }}</p>
+        
+                            <a href="{{ route('quiz.quiz') }}" class="btn btn-primary {{ $participationsRemaining <= 0 ? "disabled" : "" }}">Start the quiz!</a>
+                            <br/><br/>
                             @if(Session::has('points'))
                                 <p class="alert alert-info">Points in last attempt: {{ Session::get('points') }}</p>
                             @endif
-        
-                            <p>description goes here</p> <!-- future: short tutorial/description of the quiz -->
-
-                            <p>Participations remaining today: {{ $participationsRemaining }}</p>
-        
-                            <a href="{{ route('quiz.quiz') }}" class="btn btn-primary {{ $participationsRemaining <= 0 ? "disabled" : "" }}">Start the quiz!</a>
-        
                             @if(Session::has('error'))
                                 <p class="alert alert-danger">{{ Session::get('error') }}</p>
                             @endif

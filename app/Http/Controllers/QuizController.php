@@ -14,9 +14,9 @@ use App\Participation, App\User;
 class QuizController extends Controller
 {
     function __construct() {
-        $this->amountOfQuestions = 3;
-        $this->timeAllowed = 60; //amount of seconds allowed to take the quiz
-    } 
+        $this->amountOfQuestions = env('GOTQUIZ_AMOUNT_OF_QUESTIONS', 5);
+        $this->timeAllowed = env('GOTQUIZ_TIMEALLOWED', 120); //amount of seconds allowed to take the quiz
+    }
 
     public function index()
     {
@@ -30,8 +30,11 @@ class QuizController extends Controller
                 $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
             }
         }
+
+        $amountOfQuestions = $this->amountOfQuestions;
+        $timeAllowed = $this->timeAllowed;
         
-        return view('quiz.start', ['participationsRemaining' => $participationsRemaining, 'currentContest' => $currentContest]);
+        return view('quiz.start', ['participationsRemaining' => $participationsRemaining, 'currentContest' => $currentContest, 'amountOfQuestions' => $amountOfQuestions, 'timeAllowed' => $timeAllowed]);
     }
 
     public function gradeQuiz(Request $request) {
@@ -43,7 +46,7 @@ class QuizController extends Controller
         $quizCompleted = $request->session()->get('quizcompleted', 1);
         $quizStartTime = $request->session()->get('quizstarted', Carbon::now()->subDay());
         if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 5)) { // adding 5 seconds to allow for latency. 5 seconds extra also wouldn't give users a very unfair advantage.
-            $request->session()->flash('error', 'Something went wrong when grading your attempt so it has been invalidated. Sorry!'); 
+            $request->session()->flash('error', 'Something went wrong while grading your attempt so it has been invalidated. Sorry!'); 
             return redirect('quiz/start');
         }
         $request->session()->put('quizcompleted', 1);
@@ -111,7 +114,7 @@ class QuizController extends Controller
 
     protected function createQuestion()
     {
-        $questionType = 0; //future: generate random number between 0 & 10
+        $questionType = rand(0,7); //future: generate random number between 0 & 10
         $question = new \stdClass();
         switch ($questionType) {
             //$currentLord is the current lord/lady of which house?
@@ -131,51 +134,199 @@ class QuizController extends Controller
                 array_push($answers, $house->name);
                 shuffle($answers);
 
-                $question->question = $currentLord->name . " is the lord/lady of which house?";
+                $question->question = $currentLord->name . ' is the lord/lady of which house?';
                 $question->answers = $answers;
                 $question->correctAnswer = $house->name;
                 break;
 
             //$words are the words of which house?
             case 1:
-                echo "1";
+                $house = House::where([['words', '!=', 'NULL'], ['words', '!=', '']])->orderByRaw("RAND()")->first();
+                $words = $house->words;
+
+                $answers = [];
+                for ($i = 0; $i<3; $i++) {
+                    $dummyHouse = $house;
+                    while ($dummyHouse == $house || $dummyHouse->name == $house->name) {
+                        $dummyHouse = House::orderByRaw("RAND()")->first();
+                    }
+                    array_push($answers, $dummyHouse->name);
+                }
+
+                array_push($answers, $house->name);
+                shuffle($answers);
+
+                $question->question = '"' . $words . '" are the words of which house?';
+                $question->answers = $answers;
+                $question->correctAnswer = $house->name;
                 break;
 
             //$alias->alias refers to which character?
             case 2:
-                echo "2";
+                $correctName = '';
+                while ($correctName == '') {
+                    $characterAlias = Alias::orderByRaw("RAND()")->first();
+                    $alias = $characterAlias->alias;
+                    $correctCharacter = Character::find($characterAlias->character_id);
+                    $correctName = $correctCharacter->name;
+                }
+
+                $answers = [];
+                for ($i = 0; $i<3; $i++) {
+                    $dummyCharacterAlias = $characterAlias;
+                    $dummyName = '';
+                    while ($dummyCharacterAlias == $characterAlias || $dummyCharacterAlias->character_id == $characterAlias->character_id || $dummyName == '') {
+                        $dummyCharacterAlias = Alias::orderByRaw("RAND()")->first();
+                        $dummyCharacter = Character::find($dummyCharacterAlias->character_id);
+                        $dummyName = $dummyCharacter->name;
+                    }
+                    array_push($answers, $dummyName);
+                }
+
+                array_push($answers, $correctCharacter->name);
+                shuffle($answers);
+
+                $question->question = '"' . $alias . '" refers to which character?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctName;
                 break;
             //$house->name resides in which region?
             case 3:
-                echo "3";
+                $correctRegion = '';
+                while ($correctRegion == '') {
+                    $house = House::where([['region', '!=', 'NULL'], ['region', '!=', '']])->orderByRaw("RAND()")->first();
+                    $correctRegion = $house->region;
+                }
+
+                $answers = [];
+
+                $regions = House::select('region')->groupBy('region')->get();
+                $arrRegions = [];
+                foreach ($regions as $region) {
+                    if ($region->region) {
+                        array_push($arrRegions, $region->region);
+                    }
+                }
+
+                for ($i = 0; $i<3; $i++) {
+                    $dummyRegion = $correctRegion;
+                    while ($dummyRegion == $correctRegion) {
+                        $rand = rand(0,sizeof($arrRegions)-1);
+                        $dummyRegion = $arrRegions[$rand];
+                    }
+                    array_splice($arrRegions, $rand,1);
+                    array_push($answers, $dummyRegion);
+                }
+
+                array_push($answers, $correctRegion);
+                shuffle($answers);
+
+                $question->question = $house->name . ' resides in which region?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctRegion;
                 break;
             //$char->name belongs to which culture?
             case 4:
-                echo "4";
+                $character = Character::where([['culture', '!=', 'NULL'], ['culture', '!=', '']])->orderByRaw("RAND()")->first();
+                $correctCulture = $character->culture;
+
+                $answers = [];
+                
+                $cultures = Character::select('culture')->groupBy('culture')->get();
+                $arrCultures = [];
+                foreach ($cultures as $culture) {
+                    if ($culture->culture) {
+                        array_push($arrCultures, $culture->culture);
+                    }
+                }
+
+                for ($i = 0; $i<3; $i++) {
+                    $dummyCulture = $correctCulture;
+                    while ($dummyCulture == $correctCulture) {
+                        $rand = rand(0,sizeof($arrCultures)-1);
+                        $dummyCulture = $arrCultures[$rand];
+                    }
+                    array_splice($arrCultures, $rand,1);
+                    array_push($answers, $dummyCulture);
+                }
+
+                array_push($answers, $correctCulture);
+                shuffle($answers);
+
+                $question->question = $character->name . ' belongs to which culture?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctCulture;
+                break;
+            //Who is $char->name's mother?
+            case 5:
+                $character = Character::whereNotNull('mother')->orderByRaw("RAND()")->first();
+                $correctMother = Character::find($character->mother);
+
+                $answers = [];
+                for ($i = 0; $i<3; $i++) {
+                    $dummyMother = $correctMother;
+                    while ($dummyMother == $correctMother || $dummyMother->name == $correctMother->name) {
+                        $dummyMother = Character::orderByRaw("RAND()")->first();
+                    }
+                    array_push($answers, $dummyMother->name);
+                }
+
+                array_push($answers, $correctMother->name);
+                shuffle($answers);
+
+                $question->question = 'Who is ' . $character->name . '\'s mother?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctMother->name;
+                break;
+            //Who is $char->name's father?
+            case 6:
+                $character = Character::whereNotNull('father')->orderByRaw("RAND()")->first();
+                $correctFather = Character::find($character->father);
+
+                $answers = [];
+                for ($i = 0; $i<3; $i++) {
+                    $dummyFather = $correctFather;
+                    while ($dummyFather == $correctFather || $dummyFather->name == $correctFather->name) {
+                        $dummyFather = Character::orderByRaw("RAND()")->first();
+                    }
+                    array_push($answers, $dummyFather->name);
+                }
+
+                array_push($answers, $correctFather->name);
+                shuffle($answers);
+
+                $question->question = 'Who is ' . $character->name . '\'s father?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctFather->name;
+                break;
+            //Who is $char->name's spouse?
+            case 7:
+                $character = Character::whereNotNull('spouse')->orderByRaw("RAND()")->first();
+                $correctSpouse = Character::find($character->spouse);
+
+                $answers = [];
+                for ($i = 0; $i<3; $i++) {
+                    $dummySpouse = $correctSpouse;
+                    while ($dummySpouse == $correctSpouse || $dummySpouse->name == $correctSpouse->name) {
+                        $dummySpouse = Character::orderByRaw("RAND()")->first();
+                    }
+                    array_push($answers, $dummySpouse->name);
+                }
+
+                array_push($answers, $correctSpouse->name);
+                shuffle($answers);
+
+                $question->question = 'Who is ' . $character->name . '\'s spouse?';
+                $question->answers = $answers;
+                $question->correctAnswer = $correctSpouse->name;
                 break;
             //$char->name is the heir to which house?
-            case 5:
+            case 8:
                 echo "5";
                 break;
             //$char->name owes allegiance to which house?
-            case 6:
-                echo "6";
-                break;
-            //Who is $char->name's mother?
-            case 7:
-                echo "7";
-                break;
-            //Who is $char->name's father?
-            case 8:
-                echo "8";
-                break;
-            //Who is $char->name's spouse?
             case 9:
-                echo "9";
-                break;
-            //$house->coatOfArms describe's which house's coat of arms?
-            case 10:
-                echo "10";
+                echo "6";
                 break;
 
         }
