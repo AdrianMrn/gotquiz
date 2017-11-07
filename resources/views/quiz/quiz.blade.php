@@ -5,9 +5,9 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">GotQuiZ Season {{ $currentContest }}</div>
 
                 <div class="panel-body">
+                <h4>GotQuiZ Season {{ $currentContest }}</h4><br/>
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
@@ -32,7 +32,7 @@
                             @endphp
                             </ul>
                         @endforeach
-
+                    <br/>
                     {{ Form::submit('Submit answers') }}
                     {{ Form::close() }}
 

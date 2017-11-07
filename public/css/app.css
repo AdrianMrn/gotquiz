@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);@charset "UTF-8";
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css);
 
 html {
     min-height: 100%;
@@ -18,4 +19,11 @@ html {
     margin: 20px 0;
   }
   
-  
+  @font-face {
+    font-family: 'gotfont';
+    src: url('/fonts/got.ttf');
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'gotfont', 'Georgia', serif;
+  }

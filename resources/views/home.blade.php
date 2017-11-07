@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-            <h3>GoTQuiz</h3>
+            <h3>Game of Thrones Quiz</h3>
             <p>
                 GoTQuiz, or Game of Thrones Quiz, is a contest for fans of the series. 
                 There's a number of prizes you can win (books, bobbleheads, exclusive props from the set, ...) by competing.
