@@ -4,9 +4,6 @@
 Route::get('/', 'HomeController@index')->name('home');
 Auth::routes();
 
-Route::get('/redirect', 'SocialAuthFacebookController@redirect');
-Route::get('/callback', 'SocialAuthFacebookController@callback');
-
 Route::prefix('quiz')->group(function () {
     Route::get('start', 'QuizController@index')->name('quiz.start');
     Route::get('quiz', 'QuizController@quiz')->name('quiz.quiz');
