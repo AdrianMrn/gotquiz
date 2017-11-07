@@ -51,7 +51,7 @@ class exportexcel extends Command
             $mg = Mailgun::create(env('MAILGUN_APIKEY', ''));
             $domain = env('MAILGUN_DOMAIN', '');
 
-            $to = $admin->name . "<" . $admin->email . ">";
+            $to = $admin->name . " <" . $admin->email . ">";
             $subject = "GoTQuiz Season " . $contest->id . " daily export";
             $text = "Hi " . $admin->name . ",\n\nYou are receiving this email because you are the contest admin for this season of GoTQuiz.\n\n" . 
                     "Attached you can find an excel file of all the participations in the past 24 hours.";
