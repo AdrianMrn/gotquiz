@@ -35,4 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'facebook' => [
+        'client_id' => '126483078024211',
+        'client_secret' => '801ca30be9c00f1b2fd7d55d7937f06e',
+        'redirect' => 'http://gotquiz-adriaanmrn.c9users.io/callback',
+    ],
+
 ];

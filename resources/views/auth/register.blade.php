@@ -97,6 +97,9 @@
                             </div>
                         </div>
                     </form>
+                    <p>
+                        <a href="{{url('/redirect')}}" class="btn btn-primary">Login with Facebook</a>
+                    </p>
                 </div>
             </div>
         </div>

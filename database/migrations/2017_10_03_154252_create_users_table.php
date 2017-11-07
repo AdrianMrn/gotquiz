@@ -12,9 +12,9 @@ class CreateUsersTable extends Migration {
 			$table->string('name', 255);
 			$table->string('email', 150)->unique();
 			$table->string('password', 255);
-			$table->ipAddress('ipaddress');
-			$table->string('address', 255);
-			$table->string('town', 255);
+			$table->ipAddress('ipaddress')->nullable()->default(null);
+			$table->string('address', 255)->nullable()->default(null);
+			$table->string('town', 255)->nullable()->default(null);
 			$table->softDeletes();
 			$table->rememberToken('rememberToken');
 			$table->timestamps();
