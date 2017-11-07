@@ -35,6 +35,7 @@
                                 <th>Ends</th>
                                 <th>Status</th>
                                 <th>Participations/day</th>
+                                <th>Export participations</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -50,7 +51,10 @@
                                 <td>{{ $contest->status }}</td>
                                 <td>{{ $contest->participations_allowed_daily }}</td>
                                 <td>
-                                <a class="btn btn-warning" href="{{ route('admin.contestdetail', ['id' => $contest->id]) }}">Edit</a>
+                                    <a class="btn btn-success" target="_blank" href="{{ route('admin.contestExport', ['id' => $contest->id]) }}">Export participations</a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-warning" href="{{ route('admin.contestdetail', ['id' => $contest->id]) }}">Edit</a>
                                 </td>
                                 <td>
                                 {!! Form::open(['onsubmit' => 'return ConfirmDelete()', 'method' => 'DELETE','route' => ['contests.destroy', $contest->id],'style'=>'display:inline']) !!}

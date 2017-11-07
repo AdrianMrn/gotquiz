@@ -97,4 +97,17 @@ class ContestController extends Controller
 
         return $amountAllowed - $amountOfParticipations;
     }
+
+    public function exportExcel($id) {
+        $contest = Contest::find($id);
+        //$participations = Participation::where([['contest_id', $id], ['created_at', '>', Carbon::now()->subDay()]])->get();
+        $participations = Participation::where('contest_id', $id)->get();
+
+        \Excel::create('GoTQuiz Export Season ' . $id, function($excel) use($participations) {
+            $excel->setTitle('GoTQuiz Export')->setCreator('GoTQuiz')->setCompany('GoTQuiz')->setDescription('Export of GoTQuiz');
+            $excel->sheet('Export', function($sheet) use($participations) {
+                $sheet->fromArray($participations, null, 'A1', true);
+            });
+        })->download('xls');
+    }
 }

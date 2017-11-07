@@ -4,12 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Mailgun\Mailgun;
 
 use App\Contest, App\Participation, App\User;
-
-use App\Http\Controllers\ContestController;
-
-use Mailgun\Mailgun;
+    
 
 class checkcontests extends Command
 {
@@ -111,10 +109,11 @@ class checkcontests extends Command
         }
 
         $result = $mgClient->sendMessage("$domain",
-                array('from'    => 'Mailgun Sandbox <postmaster@sandbox1130ed18768546ab8261e91ef48d6275.mailgun.org>',
+                array('from'    => 'GoTQuiz <postmaster@' . $domain . '>',
                         'to'      => $to,
                         'subject' => $subject,
-                        'text'    => $text));
+                        'text'    => $text
+                ));
 
         return $contest;
     }

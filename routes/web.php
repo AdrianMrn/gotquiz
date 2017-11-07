@@ -15,6 +15,7 @@ Route::group(['middleware' => ['auth', 'admin']], function() {
         Route::get('/', ['uses' => 'Admin\DashboardController@index', 'as' => 'admin.dashboard']);
         Route::get('/contests', ['uses' => 'ContestController@getAll', 'as' => 'admin.contests']);
         Route::get('/contests/{id}', ['uses' => 'ContestController@detail', 'as' => 'admin.contestdetail']);
+        Route::get('/contests/export/{id}', ['uses' => 'ContestController@exportExcel', 'as' => 'admin.contestExport']);
     });
     
     Route::resource('users','UserController');
