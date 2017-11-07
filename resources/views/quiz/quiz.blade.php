@@ -1,6 +1,48 @@
 @extends('layouts.app')
 
 @section('content')
+<script>
+    window.onbeforeunload = function() {
+        return true;
+    };
+    function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer <= 0) {
+            timer = 0;
+            window.onbeforeunload = null;
+            document.quizForm.submit();
+        }
+    }, 1000);
+}
+
+window.onload = function () {
+    var display = document.querySelector('#time');
+    startTimer({{ $timeAllowed }}, display);
+};
+
+function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
+    window.onbeforeunload = null;
+    return true;
+}
+
+var form = document.getElementById('quizForm');
+    if (form.attachEvent) {
+        form.attachEvent("submit", processForm);
+    } else {
+        form.addEventListener("submit", processForm);
+}
+    
+</script>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -13,8 +55,9 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <div>Time remaining: <span id="time"></span></div><br/>
                     <!-- future: js timer that SUBMITS the form when it runs out, gets its time from $timeAllowed -->
-                    {{ Form::open(array('route' => 'quiz.gradeQuiz')) }}
+                    {{ Form::open(array('route' => 'quiz.gradeQuiz', 'name' => 'quizForm', 'id' => 'quizForm')) }}
                     @php
                     $i = 0;
                     @endphp
@@ -33,7 +76,7 @@
                             </ul>
                         @endforeach
                     <br/>
-                    {{ Form::submit('Submit answers') }}
+                    {{ Form::submit('Submit answers', ['class' => 'btn btn-primary']) }}
                     {{ Form::close() }}
 
                 </div>

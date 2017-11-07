@@ -43,9 +43,9 @@ class QuizController extends Controller
         {
             return redirect('quiz/start');
         }
-        $quizCompleted = $request->session()->get('quizcompleted', 1);
-        $quizStartTime = $request->session()->get('quizstarted', Carbon::now()->subDay());
-        if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 5)) { // adding 5 seconds to allow for latency. 5 seconds extra also wouldn't give users a very unfair advantage.
+        $quizCompleted = $request->session()->pull('quizcompleted', 1);
+        $quizStartTime = $request->session()->pull('quizstarted', Carbon::now()->subDay());
+        if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 15)) { // adding 15 seconds to allow for latency. 15 seconds extra also wouldn't give users an extremely unfair advantage.
             $request->session()->flash('error', 'Something went wrong while grading your attempt so it has been invalidated. Sorry!'); 
             return redirect('quiz/start');
         }
