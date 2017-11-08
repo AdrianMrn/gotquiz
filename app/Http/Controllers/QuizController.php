@@ -39,9 +39,14 @@ class QuizController extends Controller
     }
 
     public function gradeQuiz(Request $request) {
-        //stopping cheaters & errors
+        //stopping cheaters & various errors
         if (!Auth::check())
         {
+            return redirect('quiz/start');
+        }
+        $currentContest = (new ContestController)->currentContest();
+        if (!$currentContest) {
+            $request->session()->flash('error', 'There is currently no contest running.');
             return redirect('quiz/start');
         }
         $quizCompleted = $request->session()->pull('quizcompleted', 1);
