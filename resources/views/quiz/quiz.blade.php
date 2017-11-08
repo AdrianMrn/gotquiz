@@ -57,7 +57,6 @@ var form = document.getElementById('quizForm');
                         </div>
                     @endif
                     <div>Time remaining: <span id="time"></span></div><br/>
-                    <!-- future: js timer that SUBMITS the form when it runs out, gets its time from $timeAllowed -->
                     {{ Form::open(array('route' => 'quiz.gradeQuiz', 'name' => 'quizForm', 'id' => 'quizForm')) }}
                     @php
                     $i = 0;

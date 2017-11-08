@@ -125,7 +125,7 @@ class QuizController extends Controller
 
     protected function createQuestion()
     {
-        $questionType = rand(0,7); //future: generate random number between 0 & 10
+        $questionType = rand(0,7);
         $question = new \stdClass();
         switch ($questionType) {
             //$currentLord is the current lord/lady of which house?

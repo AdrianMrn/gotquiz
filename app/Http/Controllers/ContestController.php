@@ -23,11 +23,11 @@ class ContestController extends Controller
             $contest->start = Carbon::now()->addDays(1);
             $contest->end = Carbon::now()->addDays(2);
             $contest->contest_admin_id = Auth::user()->id;
-            $contest->winner_points = 0; //future: get rid of this (fixed in migration by adding default)
+            $contest->winner_points = 0;
     
             $contest->save();
-    
-            return redirect()->route('admin.contests');
+
+            return redirect()->route('admin.contestdetail', ['id' => $contest->id]);
         } else {
             //Validation
             $this->validate($request, [
