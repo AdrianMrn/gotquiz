@@ -17,7 +17,7 @@
                         <h4><strong>GotQuiZ Season {{ $currentContest }}</strong></h4>
                         @if (Auth::check())
         
-                            <p>You've got {{ $timeAllowed }} seconds to solve {{ $amountOfQuestions }} randomly generated questions, good luck!</p> <!-- future: short tutorial/description of the quiz -->
+                            <p>You've got <!-- {{ $timeAllowed }} seconds --> to solve {{ $amountOfQuestions }} randomly generated questions, good luck!</p> <!-- future: short tutorial/description of the quiz -->
 
                             <p>Attempts remaining today: {{ $participationsRemaining }}</p>
         

@@ -64,6 +64,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $referredBy = 0;
+        if (\Session::get('referrerid')) {
+            $referredBy = \Session::pull('referrerid');
+        }
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -71,6 +75,7 @@ class RegisterController extends Controller
             'address' => $data['address'],
             'town' => $data['town'],
             'ipaddress' => \Request::ip(),
+            'referredBy' => $referredBy,
         ]);
     }
 }

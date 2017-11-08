@@ -44,12 +44,19 @@ class QuizController extends Controller
             return redirect('quiz/start');
         }
         $quizCompleted = $request->session()->pull('quizcompleted', 1);
-        $quizStartTime = $request->session()->pull('quizstarted', Carbon::now()->subDay());
+        $quizStartTime = $request->session()->pull('quizstarted', Carbon::now()->subHour());
         if ($quizCompleted == 1 || Carbon::now() > $quizStartTime->addSeconds($this->timeAllowed + 15)) { // adding 15 seconds to allow for latency. 15 seconds extra also wouldn't give users an extremely unfair advantage.
-            $request->session()->flash('error', 'Something went wrong while grading your attempt so it has been invalidated. Sorry!'); 
+            $request->session()->flash('error', 'Something went wrong while grading your attempt so it has been invalidated. Sorry!');
             return redirect('quiz/start');
         }
         $request->session()->put('quizcompleted', 1);
+
+        //referral
+        if(Auth::user()->referredBy && !Auth::user()->referralComplete)
+        {
+            User::find(Auth::user()->referredBy)->increment('extraAttempts');
+            Auth::user()->update(['referralComplete' => 1]);
+        }
         
         $points = 0;
 
@@ -76,15 +83,18 @@ class QuizController extends Controller
             return redirect('quiz/start');
         }
         $currentContest = (new ContestController)->currentContest();
+        if (!$currentContest) {
+            $request->session()->flash('error', 'There is currently no contest running.');
+            return redirect('quiz/start');
+        }
         //checking if the user has any participations left today
         $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
         if ($participationsRemaining <= 0)
         {
-            $request->session()->flash('error', 'Amount of allowed attempts reached, come back tomorrow!'); 
+            $request->session()->flash('error', 'Amount of allowed attempts reached, come back tomorrow!');
             return redirect('quiz/start');
         }
 
-        $currentContest = (new ContestController)->currentContest();
         $participation = new Participation;
         $participation->points = 0;
         $participation->user_id = Auth::user()->id;

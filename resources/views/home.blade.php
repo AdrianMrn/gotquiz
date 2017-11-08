@@ -4,6 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
+            @if(Session::has('error'))
+                <p class="alert alert-danger">{{ Session::get('error') }}</p>
+            @endif
             <h3>Game of Thrones Quiz</h3>
             <p>
                 GoTQuiz, or Game of Thrones Quiz, is a contest for fans of the series. 
@@ -41,5 +44,18 @@
             </table>
         </div>
     </div>
+    @if (Auth::check())
+    <div class="row top-buffer">
+        <div class="col-md-4">
+            <h3>Referrals</h3>
+            <p>
+                You can invite friends to GoTQuiz using the referral link below. 
+                Every invited friend that plays at least one game will gain you a permanent 
+                one extra chance per day in every contest.
+            </p>
+            <p><input type="text" class="form-control" id="usr" readonly="readonly" value="{{ route('referral', ['id'=>Auth::user()->id]) }}"></p>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection

@@ -37,12 +37,12 @@
                         <tbody>
                             <tr>
                                 <td>{{ $contest->id }}</td>
-                                <td>{{ Form::input('text', 'winner', $contest->winner_id) }}</td>
-                                <td>{{ Form::input('text', 'contest_admin_id', $contest->contest_admin_id) }}</td>
-                                <td>{{ Form::input('text', 'start', $contest->start) }}</td>
-                                <td>{{ Form::input('text', 'end', $contest->end) }}</td>
+                                <td>{{ Form::input('text', 'winner', $contest->winner_id, array('class'=>'form-control')) }}</td>
+                                <td>{{ Form::input('text', 'contest_admin_id', $contest->contest_admin_id, array('class'=>'form-control', 'required'=>'required')) }}</td>
+                                <td>{{ Form::input('text', 'start', $contest->start, array('class'=>'form-control', 'required'=>'required')) }}</td>
+                                <td>{{ Form::input('text', 'end', $contest->end, array('class'=>'form-control', 'required'=>'required')) }}</td>
                                 <td>{{ Form::select('status', array('upcoming'=>'upcoming', 'running'=>'running', 'finished'=>'finished'), $contest->status) }}</td>
-                                <td>{{ Form::input('text', 'participations_allowed_daily', $contest->participations_allowed_daily) }}</td>
+                                <td>{{ Form::input('text', 'participations_allowed_daily', $contest->participations_allowed_daily, array('class'=>'form-control', 'required'=>'required')) }}</td>
                             </tr>
                         </tbody>
                     </table>

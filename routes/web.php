@@ -4,6 +4,8 @@
 Route::get('/', 'HomeController@index')->name('home');
 Auth::routes();
 
+Route::get('/referral/{id}', ['uses' => 'ReferralController@referralLink', 'as' => 'referral']);
+
 Route::prefix('quiz')->group(function () {
     Route::get('start', 'QuizController@index')->name('quiz.start');
     Route::get('quiz', 'QuizController@quiz')->name('quiz.quiz');

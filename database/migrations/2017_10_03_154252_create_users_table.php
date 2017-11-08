@@ -15,10 +15,15 @@ class CreateUsersTable extends Migration {
 			$table->ipAddress('ipaddress')->nullable()->default(null);
 			$table->string('address', 255)->nullable()->default(null);
 			$table->string('town', 255)->nullable()->default(null);
+			$table->integer('isAdmin')->default('0');
+			//referrals
+			$table->integer('extraAttempts')->default('0');
+			$table->integer('referralComplete')->default('0');
+			$table->integer('referredBy')->default('0');
+			
 			$table->softDeletes();
 			$table->rememberToken('rememberToken');
 			$table->timestamps();
-			$table->integer('isAdmin')->default('0');
 		});
 	}
 

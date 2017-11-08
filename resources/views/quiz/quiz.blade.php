@@ -2,9 +2,9 @@
 
 @section('content')
 <script>
-    window.onbeforeunload = function() {
+    /* window.onbeforeunload = function() {
         return true;
-    };
+    }; */
     function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
@@ -18,7 +18,7 @@
 
         if (--timer <= 0) {
             timer = 0;
-            window.onbeforeunload = null;
+            /* window.onbeforeunload = null; */
             document.quizForm.submit();
         }
     }, 1000);
@@ -29,7 +29,8 @@ window.onload = function () {
     startTimer({{ $timeAllowed }}, display);
 };
 
-function processForm(e) {
+//stop form submit from asking for confirmation
+/* function processForm(e) {
     if (e.preventDefault) e.preventDefault();
     window.onbeforeunload = null;
     return true;
@@ -40,7 +41,7 @@ var form = document.getElementById('quizForm');
         form.attachEvent("submit", processForm);
     } else {
         form.addEventListener("submit", processForm);
-}
+} */
     
 </script>
 <div class="container">

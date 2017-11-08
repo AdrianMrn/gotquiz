@@ -27,3 +27,7 @@ html {
   h1, h2, h3, h4 {
     font-family: 'gotfont', 'Georgia', serif;
   }
+
+  .top-buffer {
+    margin-top: 30px;
+  }

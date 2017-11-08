@@ -36,7 +36,8 @@ class AdminMiddleware
     public function handle($request, Closure $next)
     {
         if ($request->User()->isAdmin != "1") {
-            abort(403, 'Unauthorized action.');
+            return redirect()->route('home');
+            /* abort(403, 'Unauthorized action.'); */
         }
 
         return $next($request);
