@@ -43,20 +43,24 @@
                                 <td>{{ $user->address }}</td>
                                 <td>{{ $user->town }}</td>
                                 <td>
-                                @if ($user->isAdmin)
-                                {!! Form::open(['method' => 'PATCH','route' => ['users.update', $user->id],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Demote to user', ['class' => 'btn btn-warning']) !!}
-                                {!! Form::close() !!}
-                                @else
-                                {!! Form::open(['method' => 'PATCH','route' => ['users.update', $user->id],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Promote to admin', ['class' => 'btn btn-warning']) !!}
-                                {!! Form::close() !!}
+                                @if ($user->id != 1)
+                                    @if ($user->isAdmin)
+                                    {!! Form::open(['method' => 'PATCH','route' => ['users.update', $user->id],'style'=>'display:inline']) !!}
+                                    {!! Form::submit('Demote to user', ['class' => 'btn btn-warning']) !!}
+                                    {!! Form::close() !!}
+                                    @else
+                                    {!! Form::open(['method' => 'PATCH','route' => ['users.update', $user->id],'style'=>'display:inline']) !!}
+                                    {!! Form::submit('Promote to admin', ['class' => 'btn btn-warning']) !!}
+                                    {!! Form::close() !!}
+                                    @endif
                                 @endif
                                 </td>
                                 <td>
+                                @if ($user->id != 1)
                                 {!! Form::open(['onsubmit' => 'return ConfirmDelete()', 'method' => 'DELETE','route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!}
                                 {!! Form::submit('Delete/Disqualify', ['class' => 'btn btn-danger']) !!}
                                 {!! Form::close() !!}
+                                @endif
                                 
                                 </td>
                             </tr>
