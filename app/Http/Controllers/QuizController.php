@@ -27,9 +27,10 @@ class QuizController extends Controller
         {
             if (Auth::check())
             {
-                $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+                $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id) + Auth::user()->extraAttempts;
             }
         }
+
 
         $amountOfQuestions = $this->amountOfQuestions;
         $timeAllowed = $this->timeAllowed;
@@ -88,7 +89,7 @@ class QuizController extends Controller
             return redirect('quiz/start');
         }
         //checking if the user has any participations left today
-        $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id);
+        $participationsRemaining = (new ContestController)->participationsRemaining(Auth::user()->id) + Auth::user()->extraAttempts;
         if ($participationsRemaining <= 0)
         {
             $request->session()->flash('error', 'Amount of allowed attempts reached, come back tomorrow!');
